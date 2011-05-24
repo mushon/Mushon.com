@@ -19,7 +19,7 @@
 //    );
 //	return $args;
 //}
-//add_filter('wp_page_menu_args','childtheme_menu_args');
+//add_filter('wp_page_menu_args','childtheme_menu_args'); 
 
 
 // ----------------------------------------------------------------------------------------- Main nav
@@ -93,7 +93,7 @@ add_filter('thematic_header', 'mushon_header');
 // creates the previous_post_link_args
 function mushon_previous_post_link_args() {
 	$args = array ('format'              => '%link',
-								 'link'                => '<span>Prev</span><span class="meta-nav">ious Post: %title</span>',
+								 'link'                => '<span><strong>Prev</strong></span><span class="meta-nav"><strong>ious Post:</strong><br> %title</span>',
 								 'in_same_cat'         => FALSE,
 								 'excluded_categories' => '');
 	return $args;
@@ -104,7 +104,7 @@ add_filter('thematic_previous_post_link_args', 'mushon_previous_post_link_args' 
 // creates the next_post_link_args
 function mushon_next_post_link_args() {
 	$args = array ('format'              => '%link',
-								 'link'                => '<span>Next</span><span class="meta-nav">&nbsp;Post: %title</span>',
+								 'link'                => '<span><strong>Next</strong></span><span class="meta-nav"><strong>&nbsp;Post:</strong><br> %title</span>',
 								 'in_same_cat'         => FALSE,
 								 'excluded_categories' => '');
 	return $args;
@@ -119,32 +119,39 @@ function mushon_nav_side() {
 		
 		<div id="navi">
   
-  	<?php echo thematic_search_form() ?>
+  	<?php //add search:
+  	echo thematic_search_form() ?>
 	
-		<?php if (is_single()) {?>
+  	<?php //add navigation:
+		if (is_single()) {?>
 		
 				<div id="nav-above" class="navigation">
 					<div class="nav-previous"><?php thematic_previous_post_link() ?></div>
 					<div class="nav-next"><?php thematic_next_post_link() ?></div>
 				</div>
 			
-<?php
+    <?php
 		} else { ?>
 
 			<div id="nav-above" class="navigation">
-                <?php if(function_exists('wp_pagenavi')) { ?>
-                <?php wp_pagenavi(); ?>
-                <?php } else { ?>  
+        <?php if(function_exists('wp_pagenavi')) { ?>
+        <?php wp_pagenavi(); ?>
+        <?php } else { ?>  
 				<div class="nav-previous"><?php next_posts_link(__('<span>Prev</span><span class="meta-nav">ious Posts</span>', 'thematic')) ?></div>
 				<div class="nav-next"><?php previous_posts_link(__('<span>Next</span><span class="meta-nav">&nbsp;Posts</span>', 'thematic')) ?></div>
 				<?php } ?>
 			</div>	
-		<?php } ?>
-			
+		<?php }
+		
+		//add home link:
+		?>	
 		<div id="home-link">
 			<a title="Go back home" href="<?php bloginfo('url'); ?>">Home</a>
 		</div>
-			
+		
+		<?php
+		//add home RSS:
+		?>				
 		<div id="feed">
 			<a type="application/rss+xml" rel="alternate nofollow" title="Mushon.com Posts RSS feed" href="<?php bloginfo('rss2_url'); ?>">Feed</a>
 		</div>
@@ -156,6 +163,16 @@ function mushon_nav_side() {
 add_filter('thematic_belowheader', 'mushon_nav_side' );
 
 // ----------------------------------------------------------------------------------------- Posts
+
+//Twit This button on post footer:
+function tweet_this() {
+  global $post;
+  $tweet = sprintf( __('Reading: %1$s %2$s'), $post->post_title, wp_get_shortlink() );
+  //echo '<a class="tweethis" target="blank" href="http://twitter.com/home?status=' . urlencode( $tweet ) . '">Tweet this</a>';
+  echo '<a href="http://twitter.com/share" class="twitter-share-button" data-count="horizontal" data-via="mushon">Tweet</a><script type="text/javascript" src="http://platform.twitter.com/widgets.js"></script>';
+}
+
+//add_filter('thematic_postfooter', 'tweet_this');
 
 //add class to post:
 
@@ -289,7 +306,7 @@ add_filter('thematic_abovemainasides', 'start_side' );
 //Create the custom links sidebar between the other two:
 function mushon_sidebar($cat, $title) {
 	?>
-	<div id="initial" class="aside">
+	<div class="aside mushon-bookmarks">
 		<ul>
 	<?php
 	// --------------------------------------------start projects widget:
@@ -348,7 +365,7 @@ function mushon_sidebar($cat, $title) {
 
 function mushon_2sidebars() {
 	echo mushon_sidebar('projects', 'Selected Projects');
-	echo mushon_sidebar('teaching', 'Classes I\'m Teaching');
+	echo mushon_sidebar('teaching', 'Classes I Teach');
 }
 
 
@@ -362,5 +379,4 @@ function end_side() {
 }
 
 add_filter('thematic_belowmainasides', 'end_side' );
-
 ?>
